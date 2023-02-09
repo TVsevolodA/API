@@ -1,0 +1,27 @@
+services:
+  api:
+    image: api_todo
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes: 
+      - ./postgresdata:/var/lib/postgresql/data
+      - ./src/migrations/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql
+
+volumes:
+  db-data:
